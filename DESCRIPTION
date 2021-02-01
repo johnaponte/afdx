@@ -1,0 +1,26 @@
+Package: afdx
+Title: Diagnosis performace using attributable fraction
+Version: 0.1
+Authors@R: 
+    c(
+    person(given = "John J.",
+           family = "Aponte",
+           role = c("aut", "cre"),
+           email = "john.j.aponte@gmail.com",
+           comment = c(ORCID = "0000-0002-3014-3673")),
+    person(given = "Orvalho",
+           family = "Augusto",
+           role = c("aut"),
+           email = "caveman@gmail.com",
+           comment = c(ORCID = "0000-0002-0005-3968"))
+    )
+Description: Estimate diagnosis perfomance (Sensitivity, Specificity, 
+    positive predictive value, negative predicted value) of a diagnostic test
+    using the attributable fraction. 
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
