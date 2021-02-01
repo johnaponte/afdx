@@ -1,6 +1,6 @@
 Package: afdx
 Title: Diagnosis performace using attributable fraction
-Version: 0.2
+Version: 0.3
 Authors@R: 
     c(
     person(given = "John J.",

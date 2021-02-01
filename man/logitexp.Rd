@@ -12,7 +12,7 @@ logitexp(v.fever, v.density)
 \item{v.density}{numeric vector of values >= 0 indicating the density}
 }
 \value{
-S3 object of class afmodel with 4 components: data, model, coeficients
+S3 object of class afmodel with 4 components: data, model, coefficients
 and the estimated attributable fraction.
 }
 \description{
