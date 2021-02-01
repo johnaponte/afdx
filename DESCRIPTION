@@ -29,3 +29,7 @@ Imports:
     dplyr,
     magrittr,
     tidyr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -1,0 +1,98 @@
+---
+title: "Attributable fraction using logitexponetial model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Attributable fraction using logitexponetial model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Introduction
+
+In malaria endemic areas, asymptomatic carriage of malaria parasites occurs
+frequently and the detection of malaria parasites in blood films from a febrile 
+individual does not necessarily indicate clinical malaria. 
+
+A case definition for symptomatic malaria that is used widely in endemic areas 
+requires the presence of fever or history of fever together with a parasite density above a 
+specific cutoff. If the parasite density is equal or higher than the cut-off point, 
+the fever is considered due to malaria.
+
+How to estimate what is the sensitivity and specificity of the cut-off point in
+the classification of the fever, without knowing what is the true value of the fevers due to 
+malaria?
+
+Using the attributable fraction, one can estimate the expected
+number of true cases due to malaria and with the positive predictive value associated
+with a given cut-off point, we can estimate the expected number of true cases among
+the fever cases that have a parasite density higher or equal than the selected cut-off
+point. Based on this values, the rest of the 2x2 table can be completed and the
+sensitivity, specificity and negative predictive value.
+
+In order to estimate the attributable fraction and the positive predictive value,
+we follow the method proposed by Smith et al. (1) fitting a logistic exponential model.
+
+
+## Example using synthetic data
+```{r setup}
+library(afdx)
+```
+
+
+```{r echo = F, result = 'markup'}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(kableExtra))
+
+kable(
+  head(malaria_df1),
+       caption = "head(malaria_df1)", 
+       format = "html") %>%
+kable_styling( position = "left")
+```
+
+The data used in this example (malaria_df1) is a simulated data from a malaria cross-sectional 
+where two main outcomes are measured, the presence of fever or history of fever
+(fever column) and the measured parasite density in parasites per ul (density column).
+
+
+In this example, there is a total of 2000 observations, of which `r sum(malaria_df1$fever)`
+have fever or history of fever and `r sum(malaria_df1$density > 0)` have a 
+density of malaria greater than 0. A total of  `r sum(malaria_df1$fever * (malaria_df1$density > 0))`
+have both fever and a malaria density higher than 0.
+
+```{r echo = F, result = 'asis'}
+
+cutoffs <- c(0,1,100,200,400,800,1600,3200,6400,12800,25600,51200, 102400, 204800)
+data <- 
+  malaria_df1 %>%
+  mutate(k = cut(density,c(cutoffs,Inf), include.lowest =T, labels = cutoffs)) %>%
+  group_by(k,fever) %>%
+  tally() %>%
+  mutate(category = ifelse(fever ==1,"n (fever)","m (no fever)")) %>%
+  select(-fever) %>%
+  pivot_wider(names_from = "category", values_from = "n", values_fill = list(n = 0)) %>%
+  rename(`k (category lower limit)` = k)
+
+kable(data, "html", caption="Distribution of fevers and denstities") %>%
+kable_styling(position = "left")  
+```
+
+
+
+## The logit exponential model
+
+## Estimating the sensitivity and specificity
+
+## Graph of diagnostic characteristics for all cut-off points
+
+## ROC curve
+
+## Bibliography
