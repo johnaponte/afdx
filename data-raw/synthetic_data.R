@@ -29,9 +29,9 @@ malaria_df1 <-
 
 
 # Dataset 2
-prev = 0.90
+prev = 0.75
 alphacoef = -2
-betacoef = 0.01
+betacoef = 0.001
 tau = 0.8
 meanlog10den = 3
 sdlog10den = 0.5
