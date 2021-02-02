@@ -44,9 +44,9 @@ Here it is presented how to do it with the `afdx` package for the R-software.
 
 ## Example using synthetic data
 
-The data used in this example (malaria_df1) is a simulated data from a malaria cross-sectional 
+The data used in this example (malaria_df1) is a simulated data set as seen frequently in malaria cross-sectionals 
 where two main outcomes are measured, the presence of fever or history of fever
-(fever column) and the measured parasite density in parasites per ul (density column).
+(fever column) and the measured parasite density in parasites per $\mu l$ (density column).
 
 ```{r setup}
 library(afdx)
@@ -57,13 +57,13 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(kableExtra))
 
 kable(
-  head(malaria_df1, n = 10),
-       caption = "head(malaria_df1) first 10 rows", 
+  head(malaria_df1, n = 6),
+       caption = "head(malaria_df1) first 6 observations", 
        format = "html") %>%
 kable_styling( position = "left")
 ```
 
-In this simulation, there is a total of 2000 observations, of which `r sum(malaria_df1$fever)`
+In this simulation, there are 2000 observations, from which `r sum(malaria_df1$fever)`
 have fever or history of fever and `r sum(malaria_df1$density > 0)` have a 
 density of malaria greater than 0. A total of  `r sum(malaria_df1$fever * (malaria_df1$density > 0))`
 have both fever and a malaria density higher than 0.
