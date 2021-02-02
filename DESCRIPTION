@@ -1,6 +1,6 @@
 Package: afdx
 Title: Diagnosis performace using attributable fraction
-Version: 0.3
+Version: 0.4
 Authors@R: 
     c(
     person(given = "John J.",
@@ -31,5 +31,8 @@ Imports:
     tidyr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    tidyverse,
+    DescTools,
+    kableExtra
 VignetteBuilder: knitr

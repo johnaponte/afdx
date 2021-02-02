@@ -1,8 +1,8 @@
 ---
-title: "Attributable fraction using logitexponetial model"
+title: "Attributable fraction using a logitexponetial model"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Attributable fraction using logitexponetial model}
+  %\VignetteIndexEntry{Attributable fraction using a logitexponetial model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,17 +23,17 @@ individual does not necessarily indicate clinical malaria.
 
 A case definition for symptomatic malaria that is used widely in endemic areas 
 requires the presence of fever or history of fever together with a parasite density above a 
-specific cutoff. If the parasite density is equal or higher than the cut-off point, 
+specific cutoff. If the parasite density is equal or higher than the cutoff point, 
 the fever is considered due to malaria.
 
-How to estimate what is the sensitivity and specificity of the cut-off point in
+How to estimate what is the sensitivity and specificity of the cutoff point in
 the classification of the fever, without knowing what is the true value of the fevers due to 
 malaria?
 
 Using the attributable fraction, one can estimate the expected
 number of true cases due to malaria and with the positive predictive value associated
-with a given cut-off point, we can estimate the expected number of true cases among
-the fever cases that have a parasite density higher or equal than the selected cut-off
+with a given cutoff point, we can estimate the expected number of true cases among
+the fever cases that have a parasite density higher or equal than the selected cutoff
 point. Based on this values, the rest of the 2x2 table can be completed and the
 sensitivity, specificity and negative predictive value.
 
@@ -63,7 +63,7 @@ where two main outcomes are measured, the presence of fever or history of fever
 (fever column) and the measured parasite density in parasites per ul (density column).
 
 
-In this example, there is a total of 2000 observations, of which `r sum(malaria_df1$fever)`
+In this simulation, there is a total of 2000 observations, of which `r sum(malaria_df1$fever)`
 have fever or history of fever and `r sum(malaria_df1$density > 0)` have a 
 density of malaria greater than 0. A total of  `r sum(malaria_df1$fever * (malaria_df1$density > 0))`
 have both fever and a malaria density higher than 0.
@@ -86,13 +86,138 @@ kable_styling(position = "left")
 ```
 
 
-
 ## The logit exponential model
+
+Smith et al (1) investigate different models to describe the risk of fever due 
+to malaria. Given that the association is not linear, the best model found was a
+logit exponential model:
+
+$logit(\pi_i) = \beta(x_i)^\tau$
+
+where $\pi_i$ is the probability of fever for the observation $i$ and $x_i$ is 
+the parasite density for observation $i$. 
+
+The attributable fraction $\lambda$ is estimated as:
+
+$\lambda = (1/N)\sum{_i}{(R_i - 1)/R_i}$
+
+where $N$ is the number of fever cases, and $R_i=exp[\beta(x_i)^\tau]$
+
+If a case of malaria is defined as a case of fever with a malaria density equal
+greater than a cutoff $c$, $n_c$ is the number of fever cases that acomplish that
+definition and the proportion of these diagnosis cases that are attributable to
+malaria $\lambda_c$ is estimated by
+
+$\lambda_c = (1/n_c)\sum{_i}d_{c,i}(R_i-1)/R_i$
+
+where $d_{c,i}$ is and indicator with value 1 if that fever case statisfies the
+malaria case definition and 0 otherwise
+
+Sensitivity for the cuttof $c$ is defined then as: $n_c\lambda_c / N\lambda$,
+
+Specificity is defined as: $1-n_c(1-\lambda_c)/N(1-\lambda)$
+
+Predictive positive value as: $n_c\lambda_c/n_c = \lambda_c$
+
+Negative predicted value as: $(N(1-\lambda) - n_c(1-\lambda_c))/(N-n_c)$
+
+```{r echo =FALSE}
+fit <- fit <- logitexp(malaria_df1$fever, malaria_df1$density)
+cutoff = 500
+xx <- senspec(fit,cutoff)
+N = sum(malaria_df1$fever)
+nc = sum(malaria_df1$density > cutoff & malaria_df1$fever)
+L = fit$af
+lc = xx[1,"ppv"]
+df <- data.frame(
+  "True Malaria" = c(nc*lc, N*L-nc*lc, N*L),
+  "Other aetiology" = c(nc*(1-lc), N*(1-L)- nc*(1-lc), N-nc),
+  "All" = c(nc, N-nc, N)
+)
+row.names(df)<- c("Malaria case (fever and density > 500)", "No case", "Total")
+df <- round(df,1)
+
+```
+
+For example, if 500 is selected as cutoff point, there are `r nc` cases of fever 
+with density greater or equal than 500 from a total of `r N` fevers. From the model,
+the estimated attributable fraction is `r round(L*100,2)`% and the proportion
+attributed to malaria for fevers equal or greater than 500 is `r round(lc*100,2)`%
+
+The total number of true malaria cases is estimated as $N\lambda=$ `r round(N*L,1)` and
+the number of true malaria cases in those that accomplish the definition as $n_c\lambda_c$ = `r round(nc*lc,1)`.
+The full 2x2 table can be filled and the corresponding sensitivity, specificity and preditive values calculated.
+
+
+```{r results='markdown', echo = F}
+kable(df, "html", caption = "Case definition with 500 as cutoff") %>% kable_styling(position = "left")
+```
+
+and make the corresponding calculation for sensitivity, specificity and positive
+and predictive values
 
 ## Estimating the sensitivity and specificity
 
-## Graph of diagnostic characteristics for all cut-off points
+The `adfx` provide functions that facilitate the fitting of the logit exponential
+model and to estimate the sensitivity, specificity, positive and negative predictive
+values for different cutoff points.
+
+```{r}
+
+fit <- logitexp(malaria_df1$fever, malaria_df1$density)
+fit
+
+senspec(fit, c(1,100,500,1000,2000,4000,8000,16000, 32000,54000,100000))
+```
+
+## Graph of diagnostic characteristics for all cutoff points
+
+The function `make_cutoffs()` find the densities where there is change in 
+the number of positives and can be used to estimate the characteristics of all
+cutoff points
+
+```{r, fig.width = 8, fig.height=6, out.width= "100%", dpi = 300}
+cutoffs <-  make_cutoffs(malaria_df1$fever, malaria_df1$density)
+dxp <- senspec(fit, cutoffs[-1])
+dxp %>%
+  data.frame(.) %>%
+  pivot_longer(-cutoff, names_to = "Indicator",values_to = "Value") %>%
+  ggplot(aes(x = cutoff, y = Value, color = Indicator, linetype = Indicator)) +
+  geom_line() +
+  scale_x_log10("Cutoff")
+```
 
 ## ROC curve
 
+The receiver operative curve can be estimated from the sensitivity and specificity
+values
+
+
+```{r, fig.width = 8, fig.height=6, out.width= "100%", dpi = 300}
+rocdf <-dxp %>%
+  data.frame(.) %>%
+  ## add the corners
+  bind_rows(
+    data.frame(
+      sensitivity= c(1,0),
+      specificity= c(0,1)
+    )
+  ) %>%
+  # generate the 1-specificity
+  mutate(`1-specificity` = 1 - specificity) 
+
+  # make the graph
+  ggplot(rocdf, aes(x = `1-specificity`, y = sensitivity)) +
+  geom_line()+
+  ggtitle("ROC curve")
+  
+  # Estimate the area under the curve
+  library(DescTools)
+  AUC(rocdf$`1-specificity`, rocdf$sensitivity)
+  
+```
+
+
+
 ## Bibliography
+1. Smith T, Schellenberg JA, Hayes R. Attributable fraction estimates and case definitions for malaria in endemic areas. Stat Med. 1994 Nov 30;13(22):2345–58. 
