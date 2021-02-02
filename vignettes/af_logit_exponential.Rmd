@@ -1,5 +1,5 @@
 ---
-title: "Attributable fraction using a logitexponetial model"
+title: "Using the afdx package to fit a logit exponential model to estimate the attributable fraction"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Attributable fraction using a logitexponetial model}
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
+By John Aponte and Orvalho Augusto.
 
 ## Introduction
 
@@ -38,30 +38,30 @@ point. Based on this values, the rest of the 2x2 table can be completed and the
 sensitivity, specificity and negative predictive value.
 
 In order to estimate the attributable fraction and the positive predictive value,
-we follow the method proposed by Smith et al. (1) fitting a logistic exponential model.
+we follow the method proposed by Smith et al. (1) fitting a logistic exponential model.  
+Here it is presented how to do it with the `afdx` package for the R-software.
 
 
 ## Example using synthetic data
+
+The data used in this example (malaria_df1) is a simulated data from a malaria cross-sectional 
+where two main outcomes are measured, the presence of fever or history of fever
+(fever column) and the measured parasite density in parasites per ul (density column).
+
 ```{r setup}
 library(afdx)
 ```
-
 
 ```{r echo = F, result = 'markup'}
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(kableExtra))
 
 kable(
-  head(malaria_df1),
-       caption = "head(malaria_df1)", 
+  head(malaria_df1, n = 10),
+       caption = "head(malaria_df1) first 10 rows", 
        format = "html") %>%
 kable_styling( position = "left")
 ```
-
-The data used in this example (malaria_df1) is a simulated data from a malaria cross-sectional 
-where two main outcomes are measured, the presence of fever or history of fever
-(fever column) and the measured parasite density in parasites per ul (density column).
-
 
 In this simulation, there is a total of 2000 observations, of which `r sum(malaria_df1$fever)`
 have fever or history of fever and `r sum(malaria_df1$density > 0)` have a 
@@ -81,7 +81,7 @@ data <-
   pivot_wider(names_from = "category", values_from = "n", values_fill = list(n = 0)) %>%
   rename(`k (category lower limit)` = k)
 
-kable(data, "html", caption="Distribution of fevers and denstities") %>%
+kable(data, "html", caption="Distribution of fevers by density categories") %>%
 kable_styling(position = "left")  
 ```
 
@@ -152,9 +152,6 @@ The full 2x2 table can be filled and the corresponding sensitivity, specificity 
 ```{r results='markdown', echo = F}
 kable(df, "html", caption = "Case definition with 500 as cutoff") %>% kable_styling(position = "left")
 ```
-
-and make the corresponding calculation for sensitivity, specificity and positive
-and predictive values
 
 ## Estimating the sensitivity and specificity
 
