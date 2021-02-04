@@ -4,7 +4,7 @@
 \alias{make_cutoffs}
 \title{Cut-off points for densities and fever}
 \usage{
-make_cutoffs(v.fever, v.density)
+make_cutoffs(v.fever, v.density, add1 = TRUE)
 }
 \arguments{
 \item{v.fever}{numeric vector of 0/1 indicating fever or equivalent}
