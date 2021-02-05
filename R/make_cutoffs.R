@@ -84,8 +84,8 @@ make_n_cutoffs <- function(v.fever, v.density, mintot, add1 = TRUE) {
     mutate(lagpart = lag(intpart, default = 0)) %>%
     mutate(difpart = intpart - lagpart) %>%
     filter(difpart > 0)
-    res <- as.numeric(levels(droplevels(df$k)))
-    
+    res <- unique(c(0,as.numeric(levels(droplevels(df$k)))))
+
   if (add1)
     sort(unique(c(1,res)))
   else
