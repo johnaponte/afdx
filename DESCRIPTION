@@ -34,5 +34,8 @@ Suggests:
     rmarkdown,
     tidyverse,
     DescTools,
-    kableExtra
+    kableExtra,
+    coda,
+    rjags,
+    ggmcmc
 VignetteBuilder: knitr

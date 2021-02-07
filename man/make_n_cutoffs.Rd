@@ -7,14 +7,20 @@
 make_n_cutoffs(v.fever, v.density, mintot, add1 = TRUE)
 }
 \arguments{
+\item{v.fever}{numeric vector of 0/1 indicating fever or equivalent}
+
 \item{v.density}{numeric vector of values >= 0 indicating the density}
 
-\item{ncat}{number of category}
+\item{mintot}{minimum number of observations per category}
+
+\item{add1}{a logical value to indicate the category started with 1 is included}
 }
 \value{
 a vector with the proposed cutoff points
 }
 \description{
-Generate the a define number of categories with similar number of positive
+Generate the categories in a way that each category have at least the
+\code{mintot} number of observation. It generate all possible categories
+were there is change and then collapse to have minimun number of observations
 in each category
 }

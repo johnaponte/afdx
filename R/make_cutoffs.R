@@ -6,6 +6,7 @@
 #' 
 #' @param v.fever numeric vector of 0/1 indicating fever or equivalent
 #' @param v.density numeric vector of values >= 0 indicating the density
+#' @param add1 a logical value to indicate the category started with 1 is included
 #' 
 #' @importFrom magrittr `%>%`
 #' @importFrom dplyr filter
@@ -57,13 +58,29 @@ make_cutoffs <- function(v.fever, v.density, add1 = TRUE) {
 
 #' Make a defined number of categories having similar number of positives in each category
 #' 
-#' Generate the a define number of categories with similar number of positive
+#' Generate the categories in a way that each category have at least the
+#' \code{mintot} number of observation. It generate all possible categories
+#' were there is change and then collapse to have minimun number of observations
 #' in each category
 #' 
+#' @param v.fever numeric vector of 0/1 indicating fever or equivalent
 #' @param v.density numeric vector of values >= 0 indicating the density
-#' @param ncat number of category
+#' @param mintot minimum number of observations per category
+#' @param add1 a logical value to indicate the category started with 1 is included
+
 #' @return a vector with the proposed cutoff points
 #' @export
+#' @importFrom magrittr `%>%`
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate
+#' @importFrom dplyr arrange
+#' @importFrom dplyr select
+#' @importFrom dplyr group_by
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr left_join
+#' @importFrom dplyr tally
+#' @importFrom tidyr pivot_wider
+#' @importFrom dplyr lag
 make_n_cutoffs <- function(v.fever, v.density, mintot, add1 = TRUE) {
   
   cutpoints <- make_cutoffs(v.fever,v.density, add1)
