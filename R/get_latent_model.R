@@ -55,7 +55,7 @@ model {
   eltheta[2] ~ dgamma(1.0E-3,1.0E-3) 
   for (i in 3:K){ 
     phi0[i] <- theta[i]*z0[i] 
-    eltheta[i] ~ dgamma(1.0E-3,1.0E-3) 
+   eltheta[i] ~ dgamma(1.0E-3,1.0E-3) 
     theta[i] <- eltheta[i]/(1+Sr) 
     z0[i] <- z0[i-1]/q[i]
   }

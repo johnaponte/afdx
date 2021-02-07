@@ -1,0 +1,239 @@
+---
+title: "Using the afdx package to fit a latent class model to estimate the attributable fraction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the afdx package to fit a latent class model to estimate the attributable fraction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+By John Aponte and Orvalho Augusto.
+
+## Introduction
+
+In malaria endemic areas, asymptomatic carriage of malaria parasites occurs
+frequently and the detection of malaria parasites in blood films from a febrile 
+individual does not necessarily indicate clinical malaria. 
+
+A case definition for symptomatic malaria that is used widely in endemic areas 
+requires the presence of fever or history of fever together with a parasite density above a 
+specific cutoff. If the parasite density is equal or higher than the cutoff point, 
+the fever is considered due to malaria.
+
+How to estimate what is the sensitivity and specificity of the cutoff point in
+the classification of the fever, without knowing what is the true value of the fevers due to 
+malaria?
+
+Using the attributable fraction, one can estimate the expected
+number of true cases due to malaria and with the positive predictive value associated
+with a given cutoff point, we can estimate the expected number of true cases among
+the fever cases that have a parasite density higher or equal than the selected cutoff
+point.
+
+In order to estimate the attributable fraction and the positive predictive values,
+we follow the method proposed by Smith et al. (1) and Vountasou et al (2) fitting 
+a bayesian latent class model. 
+
+The latent class model have several advantages over the logistic exponential 
+model: do not make any assumption on the shape of the risk of the fever, only 
+that at higher categories, higher the risk of fever so there is little risk of
+bias, and provide direct estimation of the attributable fraction and the other quantities like 
+specificity and sensitivity, allowing to estimate directly confidence intervals;
+
+Here it is presented how to do it with the `afdx` package for the R-software.
+
+
+
+## Example using synthetic data
+
+The data used in this example (malaria_df1) is a simulated data set as seen frequently in malaria cross-sectionals 
+where two main outcomes are measured, the presence of fever or history of fever
+(fever column) and the measured parasite density in parasites per $\mu l$ (density column).
+
+```{r setup}
+library(afdx)
+```
+
+```{r echo = F, result = 'markup'}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(kableExtra))
+
+kable(
+  head(malaria_df1, n = 6),
+       caption = "head(malaria_df1) first 6 observations", 
+       format = "html") %>%
+kable_styling( position = "left")
+```
+
+In this simulation, there are 2000 observations, from which `r sum(malaria_df1$fever)`
+have fever or history of fever and `r sum(malaria_df1$density > 0)` have a 
+density of malaria greater than 0. A total of  `r sum(malaria_df1$fever * (malaria_df1$density > 0))`
+have both fever and a malaria density higher than 0.
+
+
+## The latent class model
+
+    * Explanation of the model
+    
+    * Explanation of the calculation of sensitivity, specificity and predictive values
+
+## Estimating the bayesian latent class model
+
+The `adfx` provide functions that facilitate the fitting of the bayesian latent class
+model using the `rjags` package, but the user is responsible to setup the appropriate 
+bayesian workflow and confirm the convergence of the model. Here we present one 
+way to do it but there are many other possibilities. We use a burn-in of 1000 
+iterations and monitor samples from 4 chains 10000 iterations.
+
+The function `get_latent_model()` provides a string with a model that can be use
+by `rjags`, 
+
+```{r}
+model <- get_latent_model()
+cat(model)
+```
+
+
+Data in the model must be provided as a list with two vectors:
+
+  * `n` with the number of subjects with symptoms in the category
+  
+  * `m` with the number of subjects without symptoms
+  
+  The model calculate as data the number of categories (K) and the total number of
+  subjects in each group (Sn, Sm)
+  
+
+```{r, cache = TRUE}
+library(coda)
+library(rjags)
+library(ggmcmc)
+
+# Define the cutoffs points. Number of categories should be big enough
+
+cutpoints <-c(1,100,200,400,800,1600,3200,6400,12800,25600,51200, 102400, 204800)
+
+#Prepare the data for the model. Categories are defined with the cutpoints
+data <- 
+  malaria_df1 %>%
+  mutate(k = cut(density,c(cutpoints,Inf), include.lowest =T, labels = cutpoints)) %>%
+  group_by(k,fever) %>%
+  tally() %>%
+  mutate(category = ifelse(fever ==1,"fever","no_fever")) %>%
+  select(-fever) %>%
+  pivot_wider(names_from = "category", values_from = "n", values_fill = list(n = 0)) %>%
+  rename(`cutpoint` = k)
+
+# compile the model
+af_latent <-
+  jags.model(
+    textConnection(get_latent_model()),
+    data = list(n = data$fever,
+                m = data$no_fever),
+    n.chains = 4,
+    n.adapt = 1000,
+    inits = list(
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 1111),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 2222),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 3333),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 4444)
+    )
+  )
+
+# Simulate the posterior
+latent_sim <-
+  coda.samples(
+    model = af_latent,
+    variable.names = c('lambda','sens','spec','ppv','npv'),
+    n.thinning = 5,
+    n.iter =  10000 )
+
+# Extract and Analyze the posterior
+latent_sum <-  summary(latent_sim)
+latent_eff <-  effectiveSize(latent_sim)
+latent_chains <- ggs(latent_sim)
+
+# reformat to present the results
+summary_table <-
+  data.frame(latent_sum[[1]]) %>%
+  bind_cols(data.frame(latent_sum[[2]])) %>%
+  mutate(varname = row.names(latent_sum[[1]])) %>%
+  mutate(cutoff  = c(NA, rep(cutpoints[-length(cutpoints)],4))) %>%
+  select(varname, cutoff,Mean, X2.5., X50., X97.5.,Naive.SE ) %>%
+  mutate(eff_size = floor(effectiveSize(latent_sim) )) %>%
+  filter(is.na(cutoff) | cutoff != 0) 
+
+mean_table <- summary_table %>%
+  dplyr::rename(point = Mean) %>%
+  dplyr::rename(lci = `X2.5.`) %>%
+  dplyr::rename(uci = `X97.5.`) %>%
+  mutate(varname = gsub("\\[.*\\]","",varname)) %>%
+  filter(varname != "lambda") %>%
+  dplyr::select(cutoff,varname, lci, uci,point) %>%
+  pivot_longer(-c("cutoff","varname"),names_to = "xxv", values_to = "value") %>%
+  unite("varx",varname,xxv ) %>%
+  pivot_wider(names_from = "varx", values_from = "value") %>%
+  dplyr::select(cutoff,
+         sens_point, 
+         sens_lci, 
+         sens_uci, 
+         spec_point,
+         spec_lci, 
+         spec_uci,
+         ppv_point, 
+         ppv_lci, 
+         ppv_uci,
+         npv_point,
+         npv_lci,
+         npv_uci) %>%
+  dplyr::rename(sensitivity = sens_point) %>%
+  dplyr::rename(specificity = spec_point) %>%
+  dplyr::rename(ppv = ppv_point) %>%
+  dplyr::rename(npv = npv_point) %>%
+  mutate_if(is.numeric, round,3)
+
+# Lambda corresponds to the attributable fraction
+afrow <- 
+  summary_table %>%
+  filter(varname == "lambda") %>% 
+  mutate_if(is.numeric, round,3)
+```
+
+
+```{r, echo = F, result = 'markup', out.width= "90%"}
+kable(mean_table, caption = "Summary of diagnostic characteristics at selected cutoff points") %>% kable_styling()
+```
+
+Attributable fraction: `r afrow$Mean` 95%CI(`r afrow$X2.5.`,  `r afrow$X97.5.` )
+
+
+
+## Explore the posterior distribution of the attributable fraction
+
+```{r, fig.width = 8, fig.height=4, out.width= "100%", dpi = 300}
+ggmcmc(latent_chains, family = "lambda", height = 4, file = NULL)
+```
+
+## Graph of diagnostic characteristics 
+
+
+
+
+## ROC curve
+
+The receiver operative curve can be estimated from the sensitivity and specificity
+values
+
+  
+
+
+
+
+
+## Bibliography

@@ -60,8 +60,8 @@ chgcat <- ldply(1:200, function(x){data.frame(nmin = x, ncats = length(make_n_cu
   ungroup()
 
 # Make the loop if the simulation does not exists
-if (file.exists("data-raw/sim_af_cats.rds")) {
-   sim_af_cats <- readRDS("data-raw/sim_af_cats.rds")
+if (file.exists("sim_af_cats.rds")) {
+   sim_af_cats <- readRDS("sim_af_cats.rds")
 } else {
   registerDoMC(cores=12)
   sim_af_cats <- ddply(chgcat, .(nmin), function(x){estimate_af(x$nmin)},  .parallel = TRUE)
