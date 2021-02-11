@@ -3,7 +3,7 @@
 ## Introduction
 
 This R-package help on the estimation of diagnosis perfomance 
-(Sensitivity, Specificity, positive predictive value, negative predicted value) 
+(Sensitivity, Specificity, Positive predictive value, Negative predicted value) 
 of a diagnostic test where the golden standard can't be measured but can be
 estimated using the attributable fraction
 
