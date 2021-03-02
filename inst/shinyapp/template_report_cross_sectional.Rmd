@@ -1,0 +1,407 @@
+---
+title: "Report on AF for a Malaria Cross-sectional"
+author: "adfx-package"
+date: !r format(Sys.Date())
+output: html_document
+params:
+  country: The country for the data
+  data: !r afdx::malaria_df1
+  description: Simulated Data to test the report
+  population: Include age population
+  location: The site
+  source: afdx package
+  timeset: 2021
+  filename: test_malaria_df1
+  iter_latent: 10000
+  cutbreaks: !r c('0','1','100','200','400','800','1600','3200','6400','12800','25600','51200','102400+')
+  cutoffs: !r c(0,1,100,200,400,800,1600,3200,6400,12800,25600,51200,102400,Inf)
+  outputdir: database
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE, 
+  message = FALSE, 
+  fig.width = 8, 
+  fig.height = 6, 
+  dpi = 300)
+library(plyr)
+library(tidyverse)
+library(afdx)
+library(coda)
+library(rjags)
+library(janitor)
+library(knitr)
+library(kableExtra)
+library(ggmcmc)
+library(DescTools)
+
+# Data management
+
+df_data <- params$data
+df_cutofss <- 
+  data.frame(cutbreaks = params$cutbreaks, 
+             cutoffs = params$cutoffs[1:length(params$cutoffs)-1], 
+             stringsAsFactors = FALSE)
+ccutofs <-  params$cutoffs[2:(length(params$cutoffs)-1)]
+
+df_cat1 <- 
+ df_data %>%
+  mutate(catdensity = cut(density, params$cutoffs, params$cutbreaks,right = F )) %>%
+  mutate(febrile = factor(fever, levels= c(1,0), labels = c("Febrile", "Afebrile"))) %>%
+  tabyl(catdensity, febrile) %>%
+  mutate(catnum = seq(1:nrow(.))) %>%
+  mutate(catval = params$cutoffs[-length(params$cutoffs)])
+
+tab_description <-
+  df_cat1 %>%
+  dplyr::rename(`Parasite density` = catdensity) %>%
+  adorn_totals() %>%
+  mutate(`% febrile` = round(Febrile / (Febrile + Afebrile)*100,1)) %>%
+  mutate(`Odds Ratio` = round(Febrile/Afebrile / (.$Febrile[1]/.$Afebrile[1]),2)) %>%
+  mutate(`Odds Ratio` = ifelse(`Parasite density` == "Total", NA, `Odds Ratio`))
+
+prevalence_fever <- mean(df_data$fever)
+prevalence_parasite <- mean(df_data$density > 0)
+prevalence_fever_parasite <- mean(df_data$fever * (df_data$density > 0))
+prevalence_nofever_parasite <- mean((1-df_data$fever) * (df_data$density> 0))
+
+```
+
+## Data description
+
+```{r}
+tibble(
+  Parameters = c(
+    "Country",
+    "Location",
+    "Population",
+    "Timeset",
+    "Description",
+    "Source",
+    "Records in dataset"
+  ),
+  Values = c(
+    params$country,
+    params$location,
+    params$population,
+    params$timeset,
+    params$description,
+    params$source,
+    as.character(nrow(df_data))
+  )
+) %>%
+  kable(caption = "Data source") %>%
+  kable_styling(full_width = F, position = "left")
+```
+
+```{r}
+tibble(
+  "Prevalence" = c("Fever", "With Parasitaemia", "Febrile with parasitaemia", "Afebrile with parasitaemia"),
+  "(%)" = c(prevalence_fever, prevalence_parasite, prevalence_fever_parasite, prevalence_nofever_parasite)
+) %>%
+ mutate(`(%)` = round(`(%)`*100,1)) %>%
+ kable(caption = "Prevalence values") %>%
+ kable_styling(full_width = F, position = "left")
+```
+
+```{r}
+tab_description %>%
+  kable(caption = "Frecuency of fever by parasitaemia category") %>%
+  kable_styling(full_width = F, position = "left")
+```
+
+```{r}
+# Figure of cumulative distribution of parasitaemia by febrile status
+df_data %>% 
+  mutate(density = ifelse(density ==0, 1,density)) %>%
+  mutate(febril = factor(fever, levels = c(1,0) , labels = c("Febrile","Afebrile"))) %>%
+  ggplot(aes(x = density, color = febril, linetype = febril)) + 
+  stat_ecdf(pad = F) + 
+  scale_x_log10(
+    "Parasites per ul", 
+    breaks = params$cutoffs[3:(length(params$cutoffs)-1)],
+    labels = function(x){format(x, big.mark = " ", scientific = F)},
+    limits = c(params$cutoffs[3]/2, params$cutoffs[(length(params$cutoffs)-1)*2])) +
+  scale_y_continuous("Cumulative Proportion", breaks = seq(0,1,0.2)) + 
+  scale_color_discrete("Febrile status", breaks = c("Afebrile","Febrile")) +
+  scale_linetype_discrete("Febrile status", breaks = c("Afebrile","Febrile")) +
+  ggtitle("Cumulative distribution of parasite density by febril status") +
+  theme(axis.text.x = element_text( size = 6))
+```
+
+
+## Maximum likelihood estimation of the logit-exponential model
+
+```{r maxll_model}
+ll_mod <- logitexp(df_data$fever, df_data$density)
+format(ll_mod) %>% 
+  kable(caption="Coefficients for the logistic-exponential model estimated by maximum likelihood") %>%
+  kable_styling(full_width = F, position = "left")
+```
+
+Attributable fraction: `r round(ll_mod$af,3)`
+
+```{r maxll_sens}
+
+# Dataframe with all cutoff points
+df_sens_ll <-
+  ll_mod %>%
+  senspec() %>%
+  as.data.frame(.) %>%
+  pivot_longer(-cutoff, names_to = "Indicator", values_to = "Mean") %>%
+  mutate(method = "MaximumLikelihood")
+
+# Dataframe with selected cutoff points
+tab_sens_ll <- senspec(ll_mod, ccutofs) %>% apply(.,2,round,3)
+
+tab_sens_ll %>%
+  kable(
+    caption = "Diagnostic characteristics using maximum-likelihood model") %>%
+  kable_styling(full_width = F, position = "left")
+```
+
+## Latent Class Bayesian model
+
+```{r latentmodel, include = FALSE}
+# compile the model
+af_latent <-
+  jags.model(
+    textConnection(get_latent_model()),
+    data = list(n = df_cat1$Febrile,
+                m = df_cat1$Afebrile),
+    n.chains = 4,
+    n.adapt = 1000,
+    inits = list(
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 1111),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 2222),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 3333),
+      list(.RNG.name = "base::Wichmann-Hill", .RNG.seed = 4444)
+    )
+  )
+
+# Simulate the posterior
+latent_sim <-
+  coda.samples(
+    model = af_latent,
+    variable.names = c('lambda','sens','spec','ppv','npv'),
+    n.thinning = 5,
+    n.iter =  10000 )
+
+# Extract and Analyze the posterior
+latent_sum <-  summary(latent_sim)
+latent_eff <-  effectiveSize(latent_sim)
+latent_chains <- ggs(latent_sim)
+
+# reformat to present the results
+summary_table <-
+  data.frame(latent_sum[[1]]) %>%
+  bind_cols(data.frame(latent_sum[[2]])) %>%
+  mutate(varname = row.names(latent_sum[[1]])) %>%
+  mutate(cutoff  = c(NA, rep(levels(df_cat1$catdensity),4))) %>%
+  select(varname, cutoff,Mean, X2.5., X50., X97.5.,Naive.SE ) %>%
+  mutate(eff_size = floor(effectiveSize(latent_sim) )) %>%
+  filter(is.na(cutoff) | cutoff != 0) 
+
+mean_table <- summary_table %>%
+  dplyr::rename(point = Mean) %>%
+  dplyr::rename(lci = `X2.5.`) %>%
+  dplyr::rename(uci = `X97.5.`) %>%
+  mutate(varname = gsub("\\[.*\\]","",varname)) %>%
+  filter(varname != "lambda") %>%
+  dplyr::select(cutoff,varname, lci, uci,point) %>%
+  pivot_longer(-c("cutoff","varname"),names_to = "xxv", values_to = "value") %>%
+  unite("varx",varname,xxv ) %>%
+  pivot_wider(names_from = "varx", values_from = "value") %>%
+  dplyr::select(cutoff,
+         sens_point, 
+         sens_lci, 
+         sens_uci, 
+         spec_point,
+         spec_lci, 
+         spec_uci,
+         ppv_point, 
+         ppv_lci, 
+         ppv_uci,
+         npv_point,
+         npv_lci,
+         npv_uci) %>%
+  dplyr::rename(sensitivity = sens_point) %>%
+  dplyr::rename(specificity = spec_point) %>%
+  dplyr::rename(ppv = ppv_point) %>%
+  dplyr::rename(npv = npv_point) %>%
+  mutate_if(is.numeric, round,3)
+
+# Lambda corresponds to the attributable fraction
+afrow <- 
+  summary_table %>%
+  filter(varname == "lambda") %>% 
+  mutate_if(is.numeric, round,3)
+```
+
+```{r, echo = F, result = 'markup', out.width= "90%"}
+mean_table %>%
+kable(caption = "Diagnostic characteristics using Bayesian Latent Class model") %>% 
+  kable_styling()
+```
+
+Attributable fraction: `r afrow$Mean` 95%CI(`r afrow$X2.5.`,  `r afrow$X97.5.` )
+
+
+```{r latentfew}
+df_sens_lc <- 
+  summary_table %>%
+  filter(varname != "lambda") %>%
+  mutate(indicator = gsub("\\[.*\\]","",varname)) %>%
+  mutate(indicator = gsub("sens","sensitivity", indicator)) %>%
+  mutate(indicator = gsub("spec","specificity", indicator)) %>%
+  mutate(indicator = gsub("ppv", "ppv", indicator)) %>%
+  mutate(indicator = gsub("npv", "npv", indicator)) %>%
+  mutate(cutoff = as.numeric(gsub("\\+","", cutoff))) %>%
+  rename(Indicator = indicator) %>%
+  mutate(method = "LatentClass")
+
+df_sens_comb <-
+  df_sens_ll %>% 
+  bind_rows(df_sens_lc)
+
+df_sens_comb %>%
+  filter(cutoff > 0) %>%
+  mutate(cutoff = ifelse(cutoff == 1 & method == "LatentClass", 50, cutoff)) %>%
+  ggplot(aes(
+    x = cutoff,
+    y = Mean,
+    ymax = X97.5.,
+    ymin = X2.5.,
+    color = Indicator,
+    fill = Indicator,
+    linetype = method
+  )) +
+  geom_ribbon(color = NA, alpha = 0.3) +
+  geom_line() +
+  scale_x_log10(
+    "Parasites per ul", 
+    breaks = params$cutoffs[3:(length(params$cutoffs)-1)],
+    labels = function(x){format(x, big.mark = " ", scientific = F)},
+    limits = c(50, params$cutoffs[(length(params$cutoffs)-1)]*2)) +
+  scale_y_continuous("Proportion")+
+  theme(axis.text.x = element_text( size = 6))
+
+```
+
+
+## Receiver Operative Characteristics
+
+ROC graph based on 1000 random samples from the posterior distribution. Each
+line corresponds to one simulation. In color highlighted selected cutoff points
+
+```{r}
+
+# WARNING Legend need to be in agreement with the cutoffs
+# Reorganize the data to estimate the ROC curve
+# based on 1000 samples
+
+sims <- latent_chains %>%
+  select(Iteration, Chain) %>% 
+  unique() %>% 
+  sample_n(1000)
+
+rocdf<- 
+  latent_chains %>%
+  right_join(sims, by = c("Iteration","Chain")) %>%
+  filter(Parameter != "lambda") %>%
+  separate(Parameter, c("indicator","catnum")) %>%
+  pivot_wider(names_from = "indicator", values_from = "value") %>%
+  mutate(nspec = 1- spec) %>%
+  select(Iteration, Chain, catnum,sens, nspec) %>%
+  unite(sim, c(Iteration, Chain)) %>%
+  # Add
+  bind_rows(
+    select(.,sim) %>% unique() %>% left_join(data.frame(sens = c(0,1), nspec = c(0,1)), by = character())
+  ) 
+
+# Estimate the AUC and summarize
+
+aucdf <- 
+  rocdf %>%
+  ddply(.(sim), 
+        function(x) {
+            data.frame(auc = AUC(x$nspec, x$sens))
+        }) %>%
+  mutate(seg = 1) %>%
+  group_by(seg) %>%
+  dplyr::summarize(
+    auc_mean = mean(auc), 
+    auc_lci = quantile(auc, 0.025), 
+    auc_uci = quantile(auc, 0.975))
+
+# Plot the lines
+ 
+
+ggplot(
+    rocdf,
+    aes(
+      x = nspec,
+      y = sens,
+      group =sim
+    )) +
+  geom_line(alpha = 0.01) +
+  geom_point(
+    data = rocdf %>%
+      filter(catnum %in% c(3:6)) %>%
+      mutate(catnum = as.factor(catnum)),
+     aes(color = catnum),
+    alpha = 0.01
+  ) +
+  geom_text(
+    data =
+      data.frame(
+        sens = 0.05,
+        nspec = 0.90,
+        text = paste0("ROC: ", 
+                      round(aucdf$auc_mean*100,1),
+                      " 95%CI (", round(aucdf$auc_lci*100,1),
+                      "; ",
+                      round(aucdf$auc_uci*100,1),")"),
+        sim = "0"
+      ),
+    aes(label = text)
+  ) +
+  scale_x_continuous("1-Specificity") +
+  scale_y_continuous("Sensitivity") +
+  scale_color_discrete("Cutoff", labels = df_cutofss$cutbreaks[3:6]) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  ggtitle("ROC curve") 
+
+
+```
+
+## Check fitting of the bayesian model
+
+```{r, fig.height= 3}
+ggmcmc(latent_chains, family = "lambda", height = 3, file = NULL)
+```
+
+
+```{r include = F}
+# This save the objects but no the data
+
+output <-
+  list(
+    params = params[-4],
+    df_cat1 = df_cat1,
+    tab_description = tab_description,
+    prevalence_fever = prevalence_fever,
+    prevalence_parasite = prevalence_parasite,
+    prevalence_fever_parasite = prevalence_fever_parasite,
+    prevalence_nofever_parasite = prevalence_nofever_parasite,
+    ll_mod = ll_mod[-2],
+    tab_sens_ll = tab_sens_ll,
+    summary_table == summary_table,
+    afrow = afrow
+  )
+
+filename = file.path(params$outputdir,paste0("report_cross_",params$filename,".rds"))
+saveRDS(output, file = filename)
+```
