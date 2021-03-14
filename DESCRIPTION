@@ -1,6 +1,6 @@
 Package: afdx
-Title: Diagnosis performace using attributable fraction
-Version: 0.4
+Title: Diagnosis Performace Using Attributable Fraction
+Version: 1.0.0
 Authors@R: 
     c(
     person(given = "John J.",
@@ -24,7 +24,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Imports: 
     maxLik,
     dplyr,

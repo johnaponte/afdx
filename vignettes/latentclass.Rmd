@@ -60,6 +60,10 @@ where two main outcomes are measured, the presence of fever or history of fever
 
 ```{r setup}
 library(afdx)
+library(coda)
+library(rjags)
+library(ggmcmc)
+
 ```
 
 ```{r echo = F, result = 'markup'}
@@ -96,9 +100,9 @@ kable_styling(position = "left")
 
 ## The latent class model
 
-    * Explanation of the model
+    * TODO: Explanation of the model
     
-    * Explanation of the calculation of sensitivity, specificity and predictive values
+    * TODO: Explanation of the calculation of sensitivity, specificity and predictive values
 
 ## Estimating the bayesian latent class model
 
@@ -127,10 +131,7 @@ Data in the model must be provided as a list with two vectors:
   subjects in each group (Sn, Sm)
   
 
-```{r}
-library(coda)
-library(rjags)
-library(ggmcmc)
+```{r, eval=FALSE}
 
 # compile the model
 af_latent <-
@@ -159,8 +160,15 @@ latent_sim <-
 # Extract and Analyze the posterior
 latent_sum <-  summary(latent_sim)
 latent_eff <-  effectiveSize(latent_sim)
-latent_chains <- ggs(latent_sim)
+```
 
+```{r, echo=FALSE, include=FALSE}
+# Load results from the model
+latent_sum <- readRDS(system.file("vignette_data/latent_sum.RDS", package = "afdx"))
+latent_eff <- readRDS(system.file("vignette_data/latent_eff.RDS", package = "afdx"))
+```
+
+```{r}
 # reformat to present the results
 summary_table <-
   data.frame(latent_sum[[1]]) %>%
@@ -168,8 +176,9 @@ summary_table <-
   mutate(varname = row.names(latent_sum[[1]])) %>%
   mutate(cutoff  = c(NA, rep(cutoffs,4))) %>%
   select(varname, cutoff,Mean, X2.5., X50., X97.5.,Naive.SE ) %>%
-  mutate(eff_size = floor(effectiveSize(latent_sim) )) %>%
+  mutate(eff_size = floor(latent_eff)) %>%
   filter(is.na(cutoff) | cutoff != 0) 
+
 
 mean_table <- summary_table %>%
   dplyr::rename(point = Mean) %>%
@@ -213,16 +222,6 @@ kable(mean_table, caption = "Summary of diagnostic characteristics at selected c
 ```
 
 Attributable fraction: `r afrow$Mean` 95%CI(`r afrow$X2.5.`,  `r afrow$X97.5.` )
-
-
-
-## Explore the posterior distribution of the attributable fraction
-
-```{r, fig.width = 8, fig.height=4, out.width= "100%", dpi = 300}
-ggmcmc(latent_chains, family = "lambda", height = 4, file = NULL)
-```
-
-
 
 
 ## Bibliography
