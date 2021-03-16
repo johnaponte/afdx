@@ -1,5 +1,5 @@
 ---
-title: "Using the afdx package to fit a logit exponential model to estimate the attributable fraction"
+title: "Attributable fraction using a logitexponetial model"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Attributable fraction using a logitexponetial model}

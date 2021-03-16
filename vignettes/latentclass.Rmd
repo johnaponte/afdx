@@ -1,8 +1,8 @@
 ---
-title: "Using the afdx package to fit a latent class model to estimate the attributable fraction"
+title: "Attributable fraction using a latent class model"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using the afdx package to fit a latent class model to estimate the attributable fraction}
+  %\VignetteIndexEntry{Attributable fraction using a latent class model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
