@@ -64,7 +64,8 @@ library(afdx)
 
 ```{r echo = F, result = 'markup'}
 suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(kableExtra))
+library(knitr)
+library(kableExtra)
 
 kable(
   head(malaria_df1, n = 6),
