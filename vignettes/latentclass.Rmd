@@ -58,12 +58,8 @@ The data used in this example (malaria_df1) is a simulated data set as seen freq
 where two main outcomes are measured, the presence of fever or history of fever
 (fever column) and the measured parasite density in parasites per $\mu l$ (density column).
 
-```{r setup}
+```{r setup, echo=T,warning=F,message=F}
 library(afdx)
-library(coda)
-library(rjags)
-library(ggmcmc)
-
 ```
 
 ```{r echo = F, result = 'markup'}
@@ -100,9 +96,9 @@ kable_styling(position = "left")
 
 ## The latent class model
 
-    * TODO: Explanation of the model
+    * TODO: Details on the model
     
-    * TODO: Explanation of the calculation of sensitivity, specificity and predictive values
+    * TODO: Detail on the calculation of sensitivity, specificity and predictive values
 
 ## Estimating the bayesian latent class model
 
@@ -132,6 +128,8 @@ Data in the model must be provided as a list with two vectors:
   
 
 ```{r, eval=FALSE}
+library(rjags)
+library(coda)
 
 # compile the model
 af_latent <-
@@ -164,6 +162,7 @@ latent_eff <-  effectiveSize(latent_sim)
 
 ```{r, echo=FALSE, include=FALSE}
 # Load results from the model
+library(coda)
 latent_sum <- readRDS(system.file("vignette_data/latent_sum.RDS", package = "afdx"))
 latent_eff <- readRDS(system.file("vignette_data/latent_eff.RDS", package = "afdx"))
 ```
