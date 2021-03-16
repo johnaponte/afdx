@@ -33,7 +33,7 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse,
+    ggplot2,
     DescTools,
     kableExtra,
     coda,

@@ -63,7 +63,9 @@ library(afdx)
 ```
 
 ```{r echo = F, result = 'markup'}
-suppressPackageStartupMessages(library(tidyverse))
+library(dplyr)
+library(tidyr)
+library(magrittr)
 library(knitr)
 library(kableExtra)
 
@@ -181,16 +183,16 @@ summary_table <-
 
 
 mean_table <- summary_table %>%
-  dplyr::rename(point = Mean) %>%
-  dplyr::rename(lci = `X2.5.`) %>%
-  dplyr::rename(uci = `X97.5.`) %>%
+  rename(point = Mean) %>%
+  rename(lci = `X2.5.`) %>%
+  rename(uci = `X97.5.`) %>%
   mutate(varname = gsub("\\[.*\\]","",varname)) %>%
   filter(varname != "lambda") %>%
-  dplyr::select(cutoff,varname, lci, uci,point) %>%
+  select(cutoff,varname, lci, uci,point) %>%
   pivot_longer(-c("cutoff","varname"),names_to = "xxv", values_to = "value") %>%
   unite("varx",varname,xxv ) %>%
   pivot_wider(names_from = "varx", values_from = "value") %>%
-  dplyr::select(cutoff,
+  select(cutoff,
          sens_point, 
          sens_lci, 
          sens_uci, 
@@ -203,10 +205,10 @@ mean_table <- summary_table %>%
          npv_point,
          npv_lci,
          npv_uci) %>%
-  dplyr::rename(sensitivity = sens_point) %>%
-  dplyr::rename(specificity = spec_point) %>%
-  dplyr::rename(ppv = ppv_point) %>%
-  dplyr::rename(npv = npv_point) %>%
+  rename(sensitivity = sens_point) %>%
+  rename(specificity = spec_point) %>%
+  rename(ppv = ppv_point) %>%
+  rename(npv = npv_point) %>%
   mutate_if(is.numeric, round,3)
 
 # Lambda corresponds to the attributable fraction

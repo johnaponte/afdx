@@ -53,7 +53,10 @@ library(afdx)
 ```
 
 ```{r echo = F, result = 'markup'}
-suppressPackageStartupMessages(library(tidyverse))
+library(dplyr)
+library(tidyr)
+library(magrittr)
+library(ggplot2)
 library(knitr)
 library(kableExtra)
 
