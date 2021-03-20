@@ -13,6 +13,9 @@ make_cutoffs(v.fever, v.density, add1 = TRUE)
 
 \item{add1}{a logical value to indicate the category started with 1 is included}
 }
+\value{
+a vector with the cutoff points
+}
 \description{
 Generate the cutoffs at every change of density in the fever, but
 first category is for density 0, and last category if possible have

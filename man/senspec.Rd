@@ -22,6 +22,11 @@ senspec(object, ...)
 \value{
 a matrix with the columns sensitivity and specificity,
 ppv (positive predicted value) and npv (negative predicted value)
+
+No return value. Raise an error.
+
+a matrix with the columns sensitivity and specificity,
+ppv (positive predicted value) and npv (negative predicted value)
 }
 \description{
 Estimate sensitivity, specificity, positive predicted value and

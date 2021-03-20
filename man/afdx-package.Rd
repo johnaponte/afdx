@@ -29,6 +29,13 @@ predicted value and negative predicted value of the latent class model.
 @name afdx
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/johnaponte/afdx}
+}
+
+}
 \author{
 \strong{Maintainer}: John J. Aponte \email{john.j.aponte@gmail.com} (\href{https://orcid.org/0000-0002-3014-3673}{ORCID})
 

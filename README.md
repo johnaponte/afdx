@@ -1,8 +1,8 @@
-# afdx: Diagnosis performace using attributable fraction
+# afdx: Diagnosis performance using attributable fraction
 
 ## Introduction
 
-This R-package help on the estimation of diagnosis perfomance 
+This R-package help on the estimation of diagnosis performance 
 (Sensitivity, Specificity, Positive predictive value, Negative predicted value) 
 of a diagnostic test where the golden standard can't be measured but can be
 estimated using the attributable fraction

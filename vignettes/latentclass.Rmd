@@ -37,7 +37,7 @@ the fever cases that have a parasite density higher or equal than the selected c
 point.
 
 In order to estimate the attributable fraction and the positive predictive values,
-we follow the method proposed by Vountasou et al (1) fitting 
+we follow the method proposed by Vounatsou et al (1) fitting 
 a bayesian latent class model. 
 
 The latent class model have several advantages over the logistic exponential 

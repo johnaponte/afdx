@@ -8,7 +8,7 @@
 { a dataset with two variables
 \describe{
 \item{fever}{1 if fever or history of fever, 0 otherwise}
-\item{density}{asexual plasmodium parasite density, in parasites per ul}
+\item{density}{asexual Plasmodium parasite density, in parasites per ul}
 }
 }
 }

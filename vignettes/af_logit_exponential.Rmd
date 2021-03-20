@@ -108,13 +108,13 @@ $\lambda = (1/N)\sum{_i}{(R_i - 1)/R_i}$
 where $N$ is the number of fever cases, and $R_i=exp[\beta(x_i)^\tau]$
 
 If a case of malaria is defined as a case of fever with a malaria density equal
-greater than a cutoff $c$, $n_c$ is the number of fever cases that acomplish that
+greater than a cutoff $c$, $n_c$ is the number of fever cases that accomplish that
 definition and the proportion of these diagnosis cases that are attributable to
 malaria $\lambda_c$ is estimated by
 
 $\lambda_c = (1/n_c)\sum{_i}d_{c,i}(R_i-1)/R_i$
 
-where $d_{c,i}$ is and indicator with value 1 if that fever case statisfies the
+where $d_{c,i}$ is and indicator with value 1 if that fever case satisfies the
 malaria case definition and 0 otherwise
 
 Sensitivity for the cuttof $c$ is defined then as: $n_c\lambda_c / N\lambda$,
@@ -150,7 +150,7 @@ attributed to malaria for fevers equal or greater than 500 is `r round(lc*100,2)
 
 The total number of true malaria cases is estimated as $N\lambda=$ `r round(N*L,1)` and
 the number of true malaria cases in those that accomplish the definition as $n_c\lambda_c$ = `r round(nc*lc,1)`.
-The full 2x2 table can be filled and the corresponding sensitivity, specificity and preditive values calculated.
+The full 2x2 table can be filled and the corresponding sensitivity, specificity and predictive values calculated.
 
 
 ```{r results='markdown', echo = F}

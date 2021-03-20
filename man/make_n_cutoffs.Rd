@@ -16,11 +16,11 @@ make_n_cutoffs(v.fever, v.density, mintot, add1 = TRUE)
 \item{add1}{a logical value to indicate the category started with 1 is included}
 }
 \value{
-a vector with the proposed cutoff points
+a vector with the cutoff points
 }
 \description{
 Generate the categories in a way that each category have at least the
 \code{mintot} number of observation. It generate all possible categories
-were there is change and then collapse to have minimun number of observations
+were there is change and then collapse to have minimum number of observations
 in each category
 }

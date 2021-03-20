@@ -7,7 +7,7 @@
 #' @param v.fever numeric vector of 0/1 indicating fever or equivalent
 #' @param v.density numeric vector of values >= 0 indicating the density
 #' @param add1 a logical value to indicate the category started with 1 is included
-#' 
+#' @return a vector with the cutoff points
 #' @importFrom magrittr `%>%`
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
@@ -18,7 +18,6 @@
 #' @importFrom dplyr left_join
 #' @importFrom dplyr tally
 #' @importFrom tidyr pivot_wider
-#' 
 #' @export
 make_cutoffs <- function(v.fever, v.density, add1 = TRUE) {
   stopifnot(!any(is.na(v.fever)))
@@ -60,15 +59,14 @@ make_cutoffs <- function(v.fever, v.density, add1 = TRUE) {
 #' 
 #' Generate the categories in a way that each category have at least the
 #' \code{mintot} number of observation. It generate all possible categories
-#' were there is change and then collapse to have minimun number of observations
+#' were there is change and then collapse to have minimum number of observations
 #' in each category
 #' 
 #' @param v.fever numeric vector of 0/1 indicating fever or equivalent
 #' @param v.density numeric vector of values >= 0 indicating the density
 #' @param mintot minimum number of observations per category
 #' @param add1 a logical value to indicate the category started with 1 is included
-
-#' @return a vector with the proposed cutoff points
+#' @return a vector with the cutoff points
 #' @export
 #' @importFrom magrittr `%>%`
 #' @importFrom dplyr filter

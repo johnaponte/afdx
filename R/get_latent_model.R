@@ -6,7 +6,7 @@
 
 #' Template for the bayesian latent class model
 #' 
-#' This function returns a template that can be use as model in an rJags model
+#' This function returns a template that can be use as model in an \code{rjags} model
 #' it requires two vectors with the number of subjects in the symptoms, 
 #' like fever in the case of malaria (n) and the number of non-symptomatic (m)
 #' in each of the categories of results of the diagnostic test. The first 

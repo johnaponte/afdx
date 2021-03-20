@@ -16,12 +16,15 @@
 #' @export
 #' @param object with the data to calculate the sensitivity and specificity
 #' @param ... other parameters for the implementing functions
+#' @return a matrix with the columns sensitivity and specificity,
+#'   ppv (positive predicted value) and npv (negative predicted value)
 senspec <- function(object,...) UseMethod("senspec", object)
 
 #' Default implementation method
 #' 
 #' @rdname senspec
 #' @export
+#' @return No return value. Raise an error.
 senspec.default <- function(object, ...) {
   stop("I don`t know what to do with an object of class", class(object), "\n")
 }
