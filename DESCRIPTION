@@ -1,5 +1,5 @@
 Package: afdx
-Title: Diagnosis Performace Using Attributable Fraction
+Title: Diagnosis Performance Using Attributable Fraction
 Version: 1.0.0
 Authors@R: 
     c(
@@ -14,7 +14,9 @@ Authors@R:
            email = "caveman@gmail.com",
            comment = c(ORCID = "0000-0002-0005-3968"))
     )
-Description: Estimate diagnosis perfomance (Sensitivity, Specificity, 
+Date: 2021-03-15
+URL: https://github.com/johnaponte/afdx
+Description: Estimate diagnosis performance (Sensitivity, Specificity, 
     Positive predictive value, Negative predicted value) of a diagnostic test
     where can not measure the golden standard but can estimate it using the 
     attributable fraction. 
@@ -38,5 +40,7 @@ Suggests:
     kableExtra,
     coda,
     rjags,
-    ggmcmc
+    ggmcmc,
+    spelling
 VignetteBuilder: knitr
+Language: en-US
