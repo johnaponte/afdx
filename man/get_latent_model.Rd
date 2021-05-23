@@ -37,3 +37,8 @@ Plucinski MM, Rogier E, Dimbu PR, Fortes F, Halsey ES, Aidoo M, et al.
 Performance of Antigen Concentration Thresholds for Attributing Fever to
 Malaria among Outpatients in Angola. J Clin Microbiol. 2019;57(3).
 }
+\examples{
+{
+ get_latent_model()
+}
+}

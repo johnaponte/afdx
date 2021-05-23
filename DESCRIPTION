@@ -1,6 +1,6 @@
 Package: afdx
 Title: Diagnosis Performance Using Attributable Fraction
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     c(
     person(given = "John J.",
@@ -41,6 +41,8 @@ Suggests:
     coda,
     rjags,
     ggmcmc,
-    spelling
+    spelling,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Language: en-US
+Config/testthat/edition: 3

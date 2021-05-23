@@ -99,9 +99,9 @@ kable_styling(position = "left")
 
 ## The latent class model
 
-    * TODO: Details on the model
+    * TODO: Include more Details on the model
     
-    * TODO: Detail on the calculation of sensitivity, specificity and predictive values
+    * TODO: Include Detail on the calculation of sensitivity, specificity and predictive values
 
 ## Estimating the bayesian latent class model
 

@@ -24,3 +24,8 @@ Generate the categories in a way that each category have at least the
 were there is change and then collapse to have minimum number of observations
 in each category
 }
+\examples{
+{
+make_n_cutoffs(malaria_df1$fever, malaria_df1$density, mintot=50)
+}
+}

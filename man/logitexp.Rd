@@ -27,3 +27,15 @@ Smith, T., Schellenberg, J.A., Hayes, R., 1994.
 Attributable fraction estimates and case definitions for malaria
 in endemic areas. Stat Med 13, 2345–2358.
 }
+\examples{
+{
+# Get the sample data
+head(malaria_df1)
+fit <- logitexp(malaria_df1$fever, malaria_df1$density)
+fit
+senspec(fit,  c(1,100,500,1000,2000,4000,8000,16000, 32000,54000,100000))
+}
+}
+\seealso{
+\code{\link{senspec}}
+}

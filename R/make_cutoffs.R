@@ -19,6 +19,9 @@
 #' @importFrom dplyr tally
 #' @importFrom tidyr pivot_wider
 #' @export
+#' @examples {
+#'  make_cutoffs(malaria_df1$fever, malaria_df1$density, add1 = TRUE)
+#' }
 make_cutoffs <- function(v.fever, v.density, add1 = TRUE) {
   stopifnot(!any(is.na(v.fever)))
   stopifnot(!any(is.na(v.density)))
@@ -79,6 +82,9 @@ make_cutoffs <- function(v.fever, v.density, add1 = TRUE) {
 #' @importFrom dplyr tally
 #' @importFrom tidyr pivot_wider
 #' @importFrom dplyr lag
+#' @examples {
+#' make_n_cutoffs(malaria_df1$fever, malaria_df1$density, mintot=50)
+#' }
 make_n_cutoffs <- function(v.fever, v.density, mintot, add1 = TRUE) {
   
   cutpoints <- make_cutoffs(v.fever,v.density, add1)

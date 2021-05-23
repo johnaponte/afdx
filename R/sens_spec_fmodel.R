@@ -42,6 +42,14 @@ senspec.default <- function(object, ...) {
 #' @importFrom dplyr arrange
 #' @importFrom dplyr select
 #' @export
+#' @examples {
+#' # Get the sample data
+#' head(malaria_df1)
+#' fit <- logitexp(malaria_df1$fever, malaria_df1$density)
+#' fit
+#' senspec(fit,  c(1,100,500,1000,2000,4000,8000,16000, 32000,54000,100000))
+#' }
+#' @seealso \code{\link{logitexp}}
 senspec.afmodel <- function(object, cutoff, ...) {
   if (missing(cutoff)) 
     cutoff <- 

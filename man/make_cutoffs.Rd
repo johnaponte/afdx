@@ -21,3 +21,8 @@ Generate the cutoffs at every change of density in the fever, but
 first category is for density 0, and last category if possible have
 no subjects with no fever.
 }
+\examples{
+{
+ make_cutoffs(malaria_df1$fever, malaria_df1$density, add1 = TRUE)
+}
+}

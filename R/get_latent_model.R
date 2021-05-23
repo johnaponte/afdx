@@ -34,6 +34,9 @@
 #' 
 #' @return a string value
 #' @export
+#' @examples{
+#'  get_latent_model()
+#' }
 get_latent_model <- function(){
   "
 data {

@@ -36,6 +36,14 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr summarise
 #' @export
+#' @examples {
+#' # Get the sample data
+#' head(malaria_df1)
+#' fit <- logitexp(malaria_df1$fever, malaria_df1$density)
+#' fit
+#' senspec(fit,  c(1,100,500,1000,2000,4000,8000,16000, 32000,54000,100000))
+#' }
+#' @seealso \code{\link{senspec}}
 logitexp <- function(v.fever, v.density) {
   
   stopifnot(v.fever %in% c(0,1))

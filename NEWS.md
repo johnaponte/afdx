@@ -1,6 +1,11 @@
 # afdx development
 
+
 ## Pre-release development
+
+* 1.1.0 Improve documentation to include examples and tests
+
+* 1.0.0 First attempt to submit to CRAN
 
 * 0.4 First version of the vignette for logitexponetial (@johnaponte)
 
