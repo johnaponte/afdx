@@ -41,3 +41,4 @@ vignettes/*.pdf
 # IOs variables
 .DS_Store
 inst/doc
+CRAN-RELEASE

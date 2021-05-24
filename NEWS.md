@@ -2,6 +2,7 @@
 
 
 ## Pre-release development
+* 1.1.1 Updated date
 
 * 1.1.0 Improve documentation to include examples and tests
 
