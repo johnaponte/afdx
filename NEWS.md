@@ -1,19 +1,41 @@
 # afdx 1.1.2
 
-# afdx development
+## Documentation
 
+* 2026-03-06 Update the NEWS.md to the correct formatting
 
-## Pre-release development
-* 1.1.1 Updated date
+# afdx 1.1.1
 
-* 1.1.0 Improve documentation to include examples and tests
+## Documentation
 
-* 1.0.0 First attempt to submit to CRAN
+* 2021-05-24 Improved documentation to include examples and tests.
 
-* 0.4 First version of the vignette for logitexponetial (@johnaponte)
+# afdx 1.1.0
 
-* 0.3 Inclusion of the bayesian model (@johnaponte)
+## CRAN submission
 
-* 0.2  Logitexponential model and associated functions (@johnaponte)
+* First attempt to submit the package to CRAN.
 
-* 0.1  Creation and documentation of synthetic data (@johnaponte) 
+# afdx 0.4
+
+## Improvements
+
+* First version of the vignette for logitexponential (@johnaponte).
+
+# afdx 0.3
+
+## New features
+
+* Inclusion of the Bayesian model (@johnaponte).
+
+# afdx 0.2
+
+## New features
+
+* Logitexponential model and associated functions (@johnaponte).
+
+# afdx 0.1
+
+## Initial development
+
+* Creation and documentation of synthetic data (@johnaponte).

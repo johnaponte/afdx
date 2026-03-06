@@ -1,6 +1,6 @@
-# afdx: Diagnosis performance using attributable fraction
+# afdx <img src="man/figures/logo.png" align="right" height="120" alt="" />
+# Diagnosis performance using attributable fraction
 
-## Introduction
 
 This R-package help on the estimation of diagnosis performance 
 (Sensitivity, Specificity, Positive predictive value, Negative predicted value) 

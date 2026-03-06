@@ -1,0 +1,20 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/af_logit_exponential.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/latentclass.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/afdx-package.html</loc></url>
+<url><loc>/reference/get_latent_model.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/logitexp.html</loc></url>
+<url><loc>/reference/make_cutoffs.html</loc></url>
+<url><loc>/reference/make_n_cutoffs.html</loc></url>
+<url><loc>/reference/malaria_df1.html</loc></url>
+<url><loc>/reference/malaria_df2.html</loc></url>
+<url><loc>/reference/senspec.html</loc></url>
+</urlset>
+
