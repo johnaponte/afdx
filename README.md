@@ -1,4 +1,4 @@
-# afdx <img src="man/figures/logo.png" align="right" height="120" alt="" />
+# afdx <img src="man/figures/logo.png" align="right" height="120" alt="adfx logo" />
 # Diagnosis performance using attributable fraction
 
 
