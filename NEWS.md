@@ -5,6 +5,8 @@
 * Update the NEWS.md to the correct formatting
 * Add a logo
 * Add a pkgdown site
+* Fix outdated URLs
+* DOI added to the references in the vignettes
 
 # afdx 1.1.1
 

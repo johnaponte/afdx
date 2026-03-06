@@ -228,9 +228,9 @@ Attributable fraction: `r afrow$Mean` 95%CI(`r afrow$X2.5.`,  `r afrow$X97.5.` )
 
 ## Bibliography
 
-1. Vounatsou P, Smith T, Smith AFM. Bayesian analysis of two-component mixture distributions applied to estimating malaria attributable fractions. Journal of the Royal Statistical Society: Series C (Applied Statistics). 1998;47(4):575–87. 
+1. Vounatsou P, Smith T, Smith AFM. Bayesian analysis of two-component mixture distributions applied to estimating malaria attributable fractions. Journal of the Royal Statistical Society: Series C (Applied Statistics). 1998;47(4):575–87. DOI: 10.1111/1467-9876.00129
 
-2. Müller I, Genton B, Rare L, Kiniboro B, Kastens W, Zimmerman P, et al. Three different Plasmodium species show similar patterns of clinical tolerance of malaria infection. Malar J. 2009;8(1):158. 
+2. Müller I, Genton B, Rare L, Kiniboro B, Kastens W, Zimmerman P, et al. Three different Plasmodium species show similar patterns of clinical tolerance of malaria infection. Malar J. 2009;8(1):158. DOI: 10.1186/1475-2875-8-158
 
-3. Plucinski MM, Rogier E, Dimbu PR, Fortes F, Halsey ES, Aidoo M, et al. Performance of Antigen Concentration Thresholds for Attributing Fever to Malaria among Outpatients in Angola. J Clin Microbiol [Internet]. 2019 Feb 27 [cited 2020 May 4];57(3). Available from: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6425161/
-
+3. Plucinski MM, Rogier E, Dimbu PR, Fortes F, Halsey ES, Aidoo M, et al.
+Performance of Antigen Concentration Thresholds for Attributing Fever to Malaria among Outpatients in Angola. J Clin Microbiol. 2019;57(3):e01901-18. DOI: 10.1128/JCM.01901-18

@@ -221,4 +221,4 @@ rocdf <-dxp %>%
 
 
 ## Bibliography
-1. Smith T, Schellenberg JA, Hayes R. Attributable fraction estimates and case definitions for malaria in endemic areas. Stat Med. 1994 Nov 30;13(22):2345–58. 
+1. Smith T, Schellenberg JA, Hayes R. Attributable fraction estimates and case definitions for malaria in endemic areas. Stat Med. 1994 Nov 30;13(22):2345–58.  DOI: 10.1002/sim.4780132206
