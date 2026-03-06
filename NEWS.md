@@ -2,13 +2,15 @@
 
 ## Documentation
 
-* 2026-03-06 Update the NEWS.md to the correct formatting
+* Update the NEWS.md to the correct formatting
+* Add a logo
+* Add a pkgdown site
 
 # afdx 1.1.1
 
 ## Documentation
 
-* 2021-05-24 Improved documentation to include examples and tests.
+* Improved documentation to include examples and tests.
 
 # afdx 1.1.0
 
