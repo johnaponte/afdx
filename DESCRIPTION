@@ -1,6 +1,6 @@
 Package: afdx
 Title: Diagnosis Performance Using Attributable Fraction
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: 
     c(
     person(given = "John J.",
