@@ -15,7 +15,7 @@ Authors@R:
            comment = c(ORCID = "0000-0002-0005-3968"))
     )
 Date: 2026-03-06
-URL: https://github.com/johnaponte/afdx
+URL: https://github.com/johnaponte/afdx, https://johnaponte.github.io/afdx/
 Description: Estimate diagnosis performance (Sensitivity, Specificity, 
     Positive predictive value, Negative predicted value) of a diagnostic test
     where can not measure the golden standard but can estimate it using the 
