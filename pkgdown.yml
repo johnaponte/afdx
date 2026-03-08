@@ -1,0 +1,10 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  af_logit_exponential: af_logit_exponential.html
+  latentclass: latentclass.html
+last_built: 2026-03-08T17:49Z
+urls:
+  reference: https://johnaponte.github.io/afdx/reference
+  article: https://johnaponte.github.io/afdx/articles

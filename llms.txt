@@ -1,0 +1,49 @@
+# afdx
+
+# Diagnosis performance using attributable fraction
+
+This R-package help on the estimation of diagnosis performance
+(Sensitivity, Specificity, Positive predictive value, Negative predicted
+value) of a diagnostic test where the golden standard can’t be measured
+but can be estimated using the attributable fraction
+
+Two methods are presented with examples for Malaria diagnosis, using a
+maximum likelihood estimated logistic exponential model and using a
+bayesian latent class model.
+
+To install the package from github use:
+
+`devtools::install_github("johnaponte/afdx", build_manual = T, build_vignettes = T)`
+
+# Package index
+
+## All functions
+
+- [`afdx`](https://johnaponte.github.io/afdx/reference/afdx-package.md)
+  [`afdx-package`](https://johnaponte.github.io/afdx/reference/afdx-package.md)
+  : afdx: Diagnosis performance indicators from attributable fraction
+  estimates.
+- [`get_latent_model()`](https://johnaponte.github.io/afdx/reference/get_latent_model.md)
+  : Template for the bayesian latent class model
+- [`logitexp()`](https://johnaponte.github.io/afdx/reference/logitexp.md)
+  : Exponential logit model for two variables
+- [`make_cutoffs()`](https://johnaponte.github.io/afdx/reference/make_cutoffs.md)
+  : Cut-off points for densities and fever
+- [`make_n_cutoffs()`](https://johnaponte.github.io/afdx/reference/make_n_cutoffs.md)
+  : Make a defined number of categories having similar number of
+  positives in each category
+- [`malaria_df1`](https://johnaponte.github.io/afdx/reference/malaria_df1.md)
+  : Synthetic data simulating a malaria crossectional
+- [`malaria_df2`](https://johnaponte.github.io/afdx/reference/malaria_df2.md)
+  : Synthetic data simulating a malaria crossectional
+- [`senspec()`](https://johnaponte.github.io/afdx/reference/senspec.md)
+  : S3 methods to estimate diagnosis performance of an afmodel
+
+# Articles
+
+### All vignettes
+
+- [Attributable fraction using a logitexponetial
+  model](https://johnaponte.github.io/afdx/articles/af_logit_exponential.md):
+- [Attributable fraction using a latent class
+  model](https://johnaponte.github.io/afdx/articles/latentclass.md):
